@@ -18,6 +18,9 @@ pydantic = "^1.10.2"
 ddtrace = "^3.2.0"
 psycopg2-binary = "^2.9.10"
 redis = "^5.2.1"
+jinja2 = "^3.1.6"
+aiosmtplib = "^4.0.0"
+aioredis = "^2.0.1"
 
 
 
@@ -34,3 +37,4 @@ coverage = "^6.4.1"
 tox-poetry = "^0.4.1"
 pytest-alembic = "^0.8.4"
 pytest-mock-resources = "^2.6.3"
+types-redis = "^4.6.0.20241004"
