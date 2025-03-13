@@ -1,5 +1,6 @@
+from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class CityBase(BaseModel):
@@ -7,6 +8,8 @@ class CityBase(BaseModel):
     name: str
     is_active: Optional[bool] = True
     last_updated_by: Optional[str]
+    last_updated_date: datetime
+
 
 
 class CityFunctionResp(BaseModel):

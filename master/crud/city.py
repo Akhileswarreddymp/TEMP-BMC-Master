@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
@@ -62,7 +63,7 @@ class CityService(BaseBackend):
 
             return CityFunctionResp(
                 data_exists=False,
-                data=Cities(code=code, name="", is_active=False, last_updated_by=""),
+                data=Cities(code=code, name="", is_active=False, last_updated_by="",last_updated_date=datetime.now(tz=timezone.utc)),
             )
         except SQLAlchemyError as err:
             await self.session.rollback()
@@ -86,7 +87,7 @@ class CityService(BaseBackend):
 
             return CitiesFunctionResponse(
                 data_exists=False,
-                data=[Cities(code="", name="", is_active=False, last_updated_by="")],
+                data=[Cities(code="", name="", is_active=False, last_updated_by="",last_updated_date=datetime.now(tz=timezone.utc))],
             )
         except SQLAlchemyError as err:
             await self.session.rollback()
@@ -113,6 +114,9 @@ class CityService(BaseBackend):
                     request.is_active if hasattr(request, "is_active") else True
                 )
                 query_data.last_updated_by = request.last_updated_by
+                query_data.last_updated_date=(
+                    request.last_updated_date.replace(tzinfo=None) if request.last_updated_date.tzinfo else request.last_updated_date
+                )
 
                 await self.session.commit()
                 await self.session.refresh(query_data)
@@ -141,6 +145,7 @@ class CityService(BaseBackend):
 
         if query_data:
             query_data.is_active = False
+            query_data.last_updated_date=datetime.now(tz=timezone.utc).replace(tzinfo=None)
 
             await self.session.commit()
             await self.session.refresh(query_data)
