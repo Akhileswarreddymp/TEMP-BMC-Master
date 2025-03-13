@@ -11,7 +11,10 @@ from master.settings import Settings
 @lru_cache(maxsize=1)
 def get_engine():
     settings = Settings()
-    postgres_url = f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
+    postgres_url = (
+        f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASSWORD}"
+        f"@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
+    )
     return create_async_engine(
         postgres_url,
         pool_size=100,
@@ -21,6 +24,7 @@ def get_engine():
         pool_timeout=25,
         pool_recycle=1800,
     )
+
 
 engine = get_engine()
 
@@ -33,8 +37,7 @@ AsyncSessionLocal = sessionmaker(
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:
-            yield session
-
+        yield session
 
 
 def run_alembic_migrations() -> None:

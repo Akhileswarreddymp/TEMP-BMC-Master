@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from sqlmodel import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class BaseBackend:
-    def __init__(self, session: Session, concrete_type: type[BaseModel]) -> None:
+    def __init__(self, session: AsyncSession, concrete_type: type[BaseModel]) -> None:
         self.session = session
         self.concrete_type = concrete_type

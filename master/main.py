@@ -15,6 +15,7 @@ app = FastAPI(
 app.add_middleware(TraceMiddleware, tracer=tracer)
 app.include_router(city_route)
 
-@app.get("/",tags=["Health"])
+
+@app.get("/", tags=["Health"])
 async def read_root() -> dict:
     return {"message": "Successfully connected to the API"}
