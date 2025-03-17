@@ -37,10 +37,10 @@ async def get_roles(
             message="Success",
             data=resp_data.data
         )
-    
+
     raise HTTPException(
         status_code=404,
-        detail={"No active roles exist in DB"}
+        detail="No active roles exist in DB"
     )
 
 
@@ -57,6 +57,43 @@ async def get_role(
             message="Success", data=resp_data.data
         )
     
+    raise HTTPException(
+        status_code=404,
+        detail=f"Data for {role} role does not exist in DB",
+    )
+
+
+@router.put("/update_role")
+async def update_user(
+    request: RoleBase,
+    session: AsyncSession = Depends(get_session)
+):
+    resp_obj = RolesService(session)
+    resp_data = await resp_obj.update_role(request)
+
+    if resp_data.data_exists:
+        return RoleResponse(
+            message="Success", data=resp_data.data
+        )
+    
+    raise HTTPException(
+        status_code=404,
+        detail=f"Data for {request.role} role does not exist in DB",
+    )
+
+
+@router.delete("/delete_role")
+async def delete_role_temperarly(
+    role: str,name:str, session: AsyncSession = Depends(get_session)
+):
+    resp_obj = RolesService(session)
+
+    resp_data = await resp_obj.delete_role(role,name)
+
+    if resp_data.data_exists:
+        return RoleResponse(
+            message="Success", data=resp_data.data
+        )
     raise HTTPException(
         status_code=404,
         detail=f"Data for {role} role does not exist in DB",

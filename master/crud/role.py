@@ -67,7 +67,7 @@ class RolesService(BaseBackend):
                     data_exists=True,
                     data=query_data,
                 )
-            
+
             return RoleFunctionResponses(
                 data_exists=False,
                 data=[RoleBase(
@@ -124,4 +124,86 @@ class RolesService(BaseBackend):
             ) from error
         
 
-    
+    async def update_role(self,request: RoleBase)->RoleFunctionResponse:
+        try:
+            query = await self.session.execute(
+                select(Roles).where(Roles.role == request.role)
+            )
+
+            query_data = query.scalars().first()
+            
+            if query_data:
+                query_data.role = request.role
+                query_data.is_active = request.is_active
+                query_data.last_updated_by = request.last_updated_by
+                query_data.last_updated_date = datetime.now(tz=timezone.utc).replace(tzinfo=None)
+
+                await self.session.commit()
+                await self.session.refresh(query_data)
+
+                return RoleFunctionResponse(data_exists=True, data=query_data)
+            
+            return RoleFunctionResponse(
+                data_exists=False,
+                data=RoleBase(
+                    role="",
+                    is_active=False,
+                    last_updated_by="",
+                    last_updated_date=datetime.now(tz=timezone.utc).replace(tzinfo=None),
+                ),
+            )
+        except SQLAlchemyError as error:
+            await self.session.rollback()
+            raise HTTPException(
+                status_code=500, detail=f"Database error: {str(error)}"
+            ) from error
+        except Exception as error:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Unexpected error while updating role: {str(error)}",
+            ) from error
+        
+
+    async def delete_role(self,role: str,name: str)->RoleFunctionResponse:
+        try:
+            query = await self.session.execute(
+                select(Roles).where(Roles.role == role)
+            )
+
+            query_data = query.scalars().first()
+
+            if query_data:
+                query_data.is_active = False
+                query_data.last_updated_by = name
+                query_data.last_updated_date = datetime.now(tz=timezone.utc).replace(
+                    tzinfo=None
+                )
+
+                await self.session.commit()
+                await self.session.refresh(query_data)
+
+                return RoleFunctionResponse(
+                    data_exists=True,
+                    data=query_data
+                )
+            return RoleFunctionResponse(
+                data_exists=False,
+                data=RoleBase(
+                    role="",
+                    is_active=False,
+                    last_updated_by="",
+                    last_updated_date=datetime.now(tz=timezone.utc).replace(tzinfo=None),
+                ),
+            )
+        except SQLAlchemyError as error:
+            await self.session.rollback()
+            raise HTTPException(
+                status_code=500, detail=f"Database error: {str(error)}"
+            ) from error
+        except Exception as error:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Unexpected error while deleting role: {str(error)}",
+            ) from error
+        
+        
