@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional,List
 from pydantic import BaseModel
 
 
@@ -15,6 +15,16 @@ class RoleResponse(BaseModel):
     data: RoleBase
 
 
+class RoleBulkResponse(BaseModel):
+    message: str
+    data: List[RoleBase]
+
+
 class RoleFunctionResponse(BaseModel):
     data_exists: bool
     data: RoleBase
+
+
+class RoleFunctionResponses(BaseModel):
+    data_exists: bool
+    data: List[RoleBase]
