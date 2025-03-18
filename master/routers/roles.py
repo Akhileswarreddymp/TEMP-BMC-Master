@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from master.models.api.roles_model import RoleBase, RoleResponse, RoleBulkResponse
+from master.models.api.roles_model import RoleBase, RoleResponse, RoleBulkResponse,RoleBaseId
 from master.database import get_session
 from master.crud.role import RolesService
 
@@ -24,13 +24,14 @@ async def add_role(request: RoleBase, session: AsyncSession = Depends(get_sessio
     return RoleResponse(message="Success", data=resp_data.data)
 
 
-@router.get("/get_all_roles")
+@router.get("/get_all_roles/{status}")
 async def get_roles(
+    status: str,
     session: AsyncSession = Depends(get_session)
 ):
     resp_obj = RolesService(session)
 
-    resp_data = await resp_obj.get_all_roles()
+    resp_data = await resp_obj.get_all_roles(status)
 
     if resp_data.data_exists:
         return RoleBulkResponse(
@@ -65,7 +66,7 @@ async def get_role(
 
 @router.put("/update_role")
 async def update_user(
-    request: RoleBase,
+    request: RoleBaseId,
     session: AsyncSession = Depends(get_session)
 ):
     resp_obj = RolesService(session)

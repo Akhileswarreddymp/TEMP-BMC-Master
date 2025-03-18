@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import SQLAlchemyError
 from master.models.database.models import Roles
-from master.models.api.roles_model import RoleBase, RoleFunctionResponse,RoleFunctionResponses
+from master.models.api.roles_model import RoleBase, RoleBaseId, RoleFunctionResponse,RoleFunctionResponses
 from master.crud.base_backend import BaseBackend
 
 
@@ -54,11 +54,20 @@ class RolesService(BaseBackend):
             ) from error
 
 
-    async def get_all_roles(self)->RoleFunctionResponses:
+    async def get_all_roles(self,status: str)->RoleFunctionResponses:
         try:
-            query = await self.session.execute(
-                select(Roles).where(Roles.is_active)
-            )
+            if status == "1":
+                query = await self.session.execute(
+                    select(Roles).where(Roles.is_active)
+                )
+            elif status == "0":
+                query = await self.session.execute(
+                    select(Roles).where(Roles.is_active == False)
+                )
+            else:
+                query = await self.session.execute(
+                    select(Roles)
+                )
 
             query_data = query.scalars().all()
 
@@ -70,7 +79,7 @@ class RolesService(BaseBackend):
 
             return RoleFunctionResponses(
                 data_exists=False,
-                data=[RoleBase(
+                data=[RoleBaseId(
                         role="",
                         is_active=False,
                         last_updated_by="",
@@ -105,7 +114,7 @@ class RolesService(BaseBackend):
             
             return RoleFunctionResponse(
                 data_exists=False,
-                data=RoleBase(
+                data=RoleBaseId(
                         role="",
                         is_active=False,
                         last_updated_by="",
@@ -124,10 +133,10 @@ class RolesService(BaseBackend):
             ) from error
         
 
-    async def update_role(self,request: RoleBase)->RoleFunctionResponse:
+    async def update_role(self,request: RoleBaseId)->RoleFunctionResponse:
         try:
             query = await self.session.execute(
-                select(Roles).where(Roles.role == request.role)
+                select(Roles).where(Roles.id == request.id)
             )
 
             query_data = query.scalars().first()
@@ -145,7 +154,7 @@ class RolesService(BaseBackend):
             
             return RoleFunctionResponse(
                 data_exists=False,
-                data=RoleBase(
+                data=RoleBaseId(
                     role="",
                     is_active=False,
                     last_updated_by="",
@@ -188,7 +197,7 @@ class RolesService(BaseBackend):
                 )
             return RoleFunctionResponse(
                 data_exists=False,
-                data=RoleBase(
+                data=RoleBaseId(
                     role="",
                     is_active=False,
                     last_updated_by="",

@@ -10,21 +10,29 @@ class RoleBase(BaseModel):
     last_updated_date: datetime
 
 
+class RoleBaseId(BaseModel):
+    id: int
+    role: str
+    is_active: Optional[bool] = True
+    last_updated_by: Optional[str]
+    last_updated_date: datetime
+    
+
 class RoleResponse(BaseModel):
     message: str
-    data: RoleBase
+    data: RoleBaseId
 
 
 class RoleBulkResponse(BaseModel):
     message: str
-    data: List[RoleBase]
+    data: List[RoleBaseId]
 
 
 class RoleFunctionResponse(BaseModel):
     data_exists: bool
-    data: RoleBase
+    data: RoleBaseId
 
 
 class RoleFunctionResponses(BaseModel):
     data_exists: bool
-    data: List[RoleBase]
+    data: List[RoleBaseId]
