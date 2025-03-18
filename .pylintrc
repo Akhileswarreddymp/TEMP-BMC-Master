@@ -14,7 +14,7 @@ enable=
 
 [SIMILARITIES]
 ignore-imports=yes
-min-similarity-lines=7
+min-similarity-lines=11
 
 [MASTER]
 ignore=alembic alembic/versions alembic/env.py

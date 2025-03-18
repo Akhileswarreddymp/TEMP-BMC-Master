@@ -3,7 +3,6 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-
 class SubRoleBase(BaseModel):
     role_id: int
     sub_role_name: str
@@ -11,6 +10,7 @@ class SubRoleBase(BaseModel):
     is_active: Optional[bool] = True
     last_updated_by: Optional[str]
     last_updated_date: datetime
+
 
 class SubRoleIdBase(BaseModel):
     id: int
@@ -26,13 +26,16 @@ class SubRoleFunctionResponse(BaseModel):
     data_exist: bool
     data: SubRoleIdBase
 
+
 class SubRoleFunctionResponses(BaseModel):
     data_exist: bool
     data: List[SubRoleIdBase]
 
+
 class SubRoleResponse(BaseModel):
     message: str
     data: SubRoleIdBase
+
 
 class SubRoleResponses(BaseModel):
     message: str

@@ -27,12 +27,14 @@ class Roles(SQLModel, table=True):
     __table_args__ = (UniqueConstraint("role"),)
 
 
-class SubRoles(SQLModel,table=True):
+class SubRoles(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True, index=True)
-    role_id: int = Field(default=None,foreign_key="roles.id",nullable=False,index=True)
-    sub_role_name: str = Field(max_length=30,nullable=False,index=True)
+    role_id: int = Field(
+        default=None, foreign_key="roles.id", nullable=False, index=True
+    )
+    sub_role_name: str = Field(max_length=30, nullable=False, index=True)
     sub_role_description: str = Field(max_length=100)
-    is_active: bool = Field(default=True,index=True)
+    is_active: bool = Field(default=True, index=True)
     last_updated_by: str = Field(max_length=50, nullable=False)
     last_updated_date: datetime = Field(default_factory=datetime.utcnow)
 

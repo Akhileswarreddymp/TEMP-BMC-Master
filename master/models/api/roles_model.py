@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional,List
+from typing import Optional, List
 from pydantic import BaseModel
 
 
@@ -16,7 +16,7 @@ class RoleBaseId(BaseModel):
     is_active: Optional[bool] = True
     last_updated_by: Optional[str]
     last_updated_date: datetime
-    
+
 
 class RoleResponse(BaseModel):
     message: str
